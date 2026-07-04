@@ -93,7 +93,7 @@ export default function LoginPage() {
           {/* Username */}
           <div className="mb-4">
             <label className="flex items-center gap-1.5 text-xs font-medium text-slate-300 mb-1.5">
-              <User className="w-3.5 h-3.5 text-slate-400" /> Username / Nickname / ID ML
+              <User className="w-3.5 h-3.5 text-slate-400" /> Username
             </label>
             <div className="relative">
               <User className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
@@ -101,7 +101,7 @@ export default function LoginPage() {
                 type="text" required value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 className="input input-iconized"
-                placeholder="Masukkan username, nickname, atau ID ML"
+                placeholder="Masukkan username"
                 autoCapitalize="none" autoCorrect="off"
               />
             </div>

@@ -119,16 +119,21 @@ export function EmptyState({ title, hint }) {
 
 export function ModalShell({ title, children, onClose, wide }) {
   return (
-    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 anim-fade" onClick={onClose}>
-      <div onClick={(e) => e.stopPropagation()}
-        className={`dyn-card dyn-card-accent p-5 w-full ${wide ? 'max-w-2xl' : 'max-w-md'} max-h-[85vh] overflow-y-auto anim-slide-up`}>
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="font-display text-lg font-semibold text-white">{title}</h3>
-          <button onClick={onClose} className="p-1.5 rounded-md hover:bg-slate-800 text-slate-400">
-            <X className="w-4 h-4" />
-          </button>
+    <div
+      className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 overflow-y-auto overscroll-contain p-4 anim-fade"
+      onClick={onClose}
+    >
+      <div className="flex min-h-full items-start sm:items-center justify-center">
+        <div onClick={(e) => e.stopPropagation()}
+          className={`dyn-card dyn-card-accent p-5 w-full ${wide ? 'max-w-2xl' : 'max-w-md'} my-4 anim-slide-up`}>
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-display text-lg font-semibold text-white">{title}</h3>
+            <button onClick={onClose} className="p-1.5 rounded-md hover:bg-slate-800 text-slate-400">
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+          {children}
         </div>
-        {children}
       </div>
     </div>
   );
