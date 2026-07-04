@@ -1,0 +1,284 @@
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =====================================================================
+   DynamiTeam design tokens
+   Tema: hitam/navy gelap + gold/amber/bronze, sedikit glow ungu.
+   Nama --dyn-cyan/--dyn-gold-deep DIPERTAHANKAN sebagai alias supaya
+   referensi lama di kode tidak pecah saat retheme.
+   ===================================================================== */
+:root {
+  --dyn-bg: #070a12;
+  --dyn-panel: #0e1424;
+  --dyn-panel-soft: #131a2c;
+  --dyn-border: rgba(212, 175, 110, 0.14);
+
+  --dyn-gold: #f5c451;
+  --dyn-gold-soft: #d9b676;
+  --dyn-amber: #f59e0b;
+  --dyn-bronze: #b08d57;
+
+  --dyn-danger: #f43f5e;
+  --dyn-success: #34d399;
+  --dyn-purple: #8b5cf6;
+
+  /* alias kompatibilitas */
+  --dyn-gold-deep: var(--dyn-amber);
+  --dyn-cyan: var(--dyn-purple);
+}
+
+html, body {
+  background-color: var(--dyn-bg);
+}
+
+.font-display { font-family: 'Rajdhani', sans-serif; letter-spacing: 0.03em; }
+.font-body { font-family: 'Inter', sans-serif; }
+
+/* =====================================================================
+   Backdrops
+   ===================================================================== */
+/* Latar kerja (dashboard) - statis & redup supaya scroll lama tetap ringan */
+.premium-bg {
+  background:
+    radial-gradient(1100px 620px at 12% -10%, rgba(245, 196, 81, 0.07), transparent 60%),
+    radial-gradient(900px 600px at 100% 8%, rgba(139, 92, 246, 0.06), transparent 62%),
+    var(--dyn-bg);
+}
+
+/* Latar login - dark fantasy, lebih dramatis */
+.login-bg {
+  background:
+    radial-gradient(900px 700px at 18% 20%, rgba(245, 196, 81, 0.10), transparent 55%),
+    radial-gradient(760px 620px at 86% 78%, rgba(139, 92, 246, 0.12), transparent 58%),
+    radial-gradient(1200px 900px at 50% 120%, rgba(176, 141, 87, 0.10), transparent 60%),
+    linear-gradient(160deg, #05070d 0%, #0a0e1a 45%, #070a14 100%);
+}
+
+.bg-grid {
+  background-image:
+    linear-gradient(rgba(212, 175, 110, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(212, 175, 110, 0.045) 1px, transparent 1px);
+  background-size: 46px 46px;
+}
+
+/* =====================================================================
+   Panels & cards
+   ===================================================================== */
+.dyn-card {
+  background: var(--dyn-panel);
+  border: 1px solid var(--dyn-border);
+  border-radius: 0.9rem;
+}
+.dyn-card-soft {
+  background: var(--dyn-panel-soft);
+  border: 1px solid var(--dyn-border);
+  border-radius: 0.9rem;
+}
+
+.dyn-card-accent {
+  position: relative;
+  overflow: hidden;
+}
+.dyn-card-accent::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--dyn-gold), var(--dyn-amber), var(--dyn-purple), transparent);
+  opacity: 0.75;
+}
+
+.glass-panel {
+  background: rgba(14, 20, 36, 0.66);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(245, 196, 81, 0.20);
+  border-radius: 1.1rem;
+  box-shadow:
+    0 24px 70px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(245, 196, 81, 0.08);
+}
+
+/* =====================================================================
+   Text & buttons
+   ===================================================================== */
+.gold-text {
+  background: linear-gradient(92deg, var(--dyn-gold), var(--dyn-amber) 55%, var(--dyn-gold-soft));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.gold-button, .btn-primary {
+  padding: 0.6rem 1.1rem;
+  border-radius: 0.6rem;
+  background: linear-gradient(135deg, #ffdd8a 0%, var(--dyn-gold) 42%, var(--dyn-amber) 100%);
+  color: #2a1c02;
+  font-size: 0.875rem;
+  font-weight: 700;
+  border: 1px solid rgba(245, 196, 81, 0.55);
+  transition: filter 0.15s ease, transform 0.12s ease, box-shadow 0.2s ease;
+}
+.gold-button:hover, .btn-primary:hover {
+  filter: brightness(1.06);
+  box-shadow: 0 6px 24px rgba(245, 158, 11, 0.38);
+}
+.gold-button:active, .btn-primary:active { transform: translateY(1px); }
+.gold-button:disabled, .btn-primary:disabled { opacity: 0.45; cursor: not-allowed; box-shadow: none; }
+
+.btn-secondary {
+  padding: 0.6rem 1.1rem;
+  border-radius: 0.6rem;
+  background: #17203a;
+  color: #cbd5e1;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border: 1px solid #2a3550;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.btn-secondary:hover { background: #1f2a49; border-color: #3a466b; }
+
+/* =====================================================================
+   Inputs
+   ===================================================================== */
+.input {
+  width: 100%;
+  padding: 0.6rem 0.85rem;
+  border-radius: 0.6rem;
+  background: #101728;
+  border: 1px solid #2a3550;
+  color: #f1f5f9;
+  font-size: 0.875rem;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.input::placeholder { color: #64748b; }
+.input:focus {
+  outline: none;
+  border-color: var(--dyn-gold);
+  box-shadow: 0 0 0 1px var(--dyn-gold), 0 0 16px rgba(245, 196, 81, 0.22);
+}
+.input-iconized { padding-left: 2.4rem; }
+.input-iconized-r { padding-right: 2.6rem; }
+
+/* =====================================================================
+   Chips (dipakai filter admin)
+   ===================================================================== */
+.chip {
+  padding: 0.32rem 0.8rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border: 1px solid #2a3550;
+  background: #101728;
+  color: #94a3b8;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+.chip:hover { color: #e2e8f0; border-color: var(--dyn-bronze); }
+.chip-active {
+  background: rgba(245, 196, 81, 0.12);
+  border-color: var(--dyn-gold);
+  color: var(--dyn-gold);
+}
+
+/* =====================================================================
+   Sidebar & navigation
+   ===================================================================== */
+.sidebar-shell {
+  background: linear-gradient(180deg, #0c1120 0%, #0a0e1a 100%);
+  border-right: 1px solid var(--dyn-border);
+}
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.62rem 0.8rem;
+  border-radius: 0.6rem;
+  font-size: 0.875rem;
+  color: #94a3b8;
+  border: 1px solid transparent;
+  transition: all 0.15s ease;
+}
+.nav-item:hover { color: #e2e8f0; background: rgba(255, 255, 255, 0.03); }
+.nav-item-active {
+  color: var(--dyn-gold);
+  background: linear-gradient(90deg, rgba(245, 196, 81, 0.14), rgba(245, 196, 81, 0.02));
+  border-color: rgba(245, 196, 81, 0.3);
+}
+.nav-item-active svg { color: var(--dyn-gold); }
+
+/* =====================================================================
+   Avatar ring & trophy glow
+   ===================================================================== */
+.avatar-ring {
+  position: relative;
+  border-radius: 999px;
+  padding: 2px;
+  background: conic-gradient(from 210deg, var(--dyn-amber), var(--dyn-gold), var(--dyn-gold-soft), var(--dyn-bronze), var(--dyn-amber));
+  box-shadow: 0 0 18px rgba(245, 196, 81, 0.3);
+}
+.avatar-ring-inner {
+  border-radius: 999px;
+  background: #0e1424;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.trophy-glow {
+  filter: drop-shadow(0 0 22px rgba(245, 196, 81, 0.4)) drop-shadow(0 0 40px rgba(139, 92, 246, 0.22));
+}
+
+/* =====================================================================
+   Animations (sekali jalan, ringan)
+   ===================================================================== */
+@keyframes dynFadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes dynSlideUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes dynScaleIn { from { opacity: 0; transform: scale(0.92); } to { opacity: 1; transform: scale(1); } }
+@keyframes dynGlowDrift { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(26px,-16px) scale(1.06); } }
+@keyframes dynGlowPulse { 0%,100% { opacity: 0.35; } 50% { opacity: 0.7; } }
+@keyframes dynPulseBorder { 0%,100% { box-shadow: 0 0 0 0 rgba(244,63,94,0.35); } 50% { box-shadow: 0 0 0 5px rgba(244,63,94,0); } }
+@keyframes dynEmber {
+  0%   { transform: translateY(0) translateX(0) scale(1); opacity: 0; }
+  10%  { opacity: 0.9; }
+  90%  { opacity: 0.5; }
+  100% { transform: translateY(-120px) translateX(14px) scale(0.4); opacity: 0; }
+}
+
+.anim-fade { animation: dynFadeIn 0.5s ease-out both; }
+.anim-slide-up { animation: dynSlideUp 0.5s ease-out both; }
+.anim-slide-up-delay { animation: dynSlideUp 0.55s 0.12s ease-out both; }
+.anim-scale { animation: dynScaleIn 0.45s ease-out both; }
+.anim-glow-drift { animation: dynGlowDrift 9s ease-in-out infinite; }
+.anim-glow-pulse { animation: dynGlowPulse 3.4s ease-in-out infinite; }
+.anim-pulse-danger { animation: dynPulseBorder 1.8s ease-in-out infinite; }
+
+/* Ember particles (login) */
+.ember {
+  position: absolute;
+  bottom: -8px;
+  width: 3px;
+  height: 3px;
+  border-radius: 999px;
+  background: radial-gradient(circle, #ffd77a, rgba(245, 158, 11, 0.2));
+  box-shadow: 0 0 8px rgba(245, 196, 81, 0.7);
+  animation: dynEmber linear infinite;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .anim-fade, .anim-slide-up, .anim-slide-up-delay, .anim-scale,
+  .anim-glow-drift, .anim-glow-pulse, .anim-pulse-danger, .ember {
+    animation: none;
+  }
+  .ember { display: none; }
+}
+
+/* Utility scrollbar halus untuk area sidebar/tabel */
+.thin-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
+.thin-scroll::-webkit-scrollbar-thumb { background: rgba(148,163,184,0.25); border-radius: 999px; }
