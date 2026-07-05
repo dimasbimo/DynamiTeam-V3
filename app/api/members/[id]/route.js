@@ -38,6 +38,8 @@ async function PATCH(req, { params }) {
   if (body.nicknameML !== undefined) data.nicknameML = String(body.nicknameML).trim();
   if (body.idML !== undefined) data.idML = String(body.idML).trim();
   if (body.roleSquad !== undefined) data.roleSquad = String(body.roleSquad).trim();
+  if (body.mainRole !== undefined) data.mainRole = body.mainRole ? String(body.mainRole).trim() : null;
+  if (body.subRole !== undefined) data.subRole = body.subRole ? String(body.subRole).trim() : null;
 
   // Member tidak boleh mengosongkan field wajib.
   if (!isAdmin && (data.nicknameML === '' || data.roleSquad === '' || data.idML === '')) {

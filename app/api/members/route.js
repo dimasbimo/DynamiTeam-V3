@@ -15,7 +15,7 @@ async function POST(req) {
   if (error) return error;
 
   const body = await req.json();
-  const { nama, nicknameML, idML, roleSquad, username, password, linkToSelf } = body;
+  const { nama, nicknameML, idML, roleSquad, mainRole, subRole, username, password, linkToSelf } = body;
 
   if (!nama?.trim() || !nicknameML?.trim()) {
     return Response.json({ error: 'Nama dan nickname wajib diisi.' }, { status: 400 });
@@ -34,6 +34,8 @@ async function POST(req) {
         nicknameML: nicknameML.trim(),
         idML: idML?.trim() || '-',
         roleSquad: roleSquad?.trim() || '-',
+        mainRole: mainRole?.trim() || null,
+        subRole: subRole?.trim() || null,
         nyawaCurrent: 2,
         status: 'WASPADA',
       },
@@ -64,6 +66,8 @@ async function POST(req) {
       nicknameML: nicknameML.trim(),
       idML: idML?.trim() || '-',
       roleSquad: roleSquad?.trim() || '-',
+      mainRole: mainRole?.trim() || null,
+      subRole: subRole?.trim() || null,
       nyawaCurrent: 2,
       status: 'WASPADA',
       user: {

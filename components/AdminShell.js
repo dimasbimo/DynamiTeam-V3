@@ -1,13 +1,13 @@
 'use client';
 
 import Link from 'next/link';
-import { LayoutDashboard, Activity, Trophy, Settings, User } from 'lucide-react';
+import { LayoutDashboard, Activity, Settings, User, Award } from 'lucide-react';
 import { AppShell } from './ui';
 
 const ITEMS = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/admin/activity', label: 'Activity Bulanan', icon: Activity, badge: 'Baru' },
-  { href: '/admin/leaderboard', label: 'Leaderboard', icon: Trophy },
+  { href: '/admin/highrank', label: 'Highrank ML', icon: Award },
   { href: '/admin/settings', label: 'Pengaturan', icon: Settings },
 ];
 
@@ -17,6 +17,7 @@ export default function AdminShell({ children }) {
       <User className="w-4 h-4" /> <span className="hidden sm:inline">Dashboard Member Saya</span>
     </Link>
   );
+
   return (
     <AppShell items={ITEMS} brandSub="Admin Panel" headerRight={headerRight}>
       {children}

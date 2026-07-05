@@ -1,8 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import { Pencil, BadgeCheck } from 'lucide-react';
+import { Pencil, BadgeCheck, Award } from 'lucide-react';
 import { AvatarRing, StatusBadge, NyawaShards, StatCard, BackLink, fmtDate, MAX_NYAWA } from './ui';
+import { roleLabel } from '../lib/roles';
 
 function InfoRow({ label, value }) {
   return (
@@ -13,7 +14,7 @@ function InfoRow({ label, value }) {
   );
 }
 
-export default function ProfileView({ member, monthlyTotal, rank, monthLabel, canEdit, backHref, backLabel }) {
+export default function ProfileView({ member, monthlyTotal, rank, monthLabel, canEdit, backHref, backLabel, highrankInfo = null }) {
   const isCritical = member.nyawaCurrent === 1 && member.status !== 'KICK';
   return (
     <div className="max-w-3xl mx-auto">
@@ -30,7 +31,7 @@ export default function ProfileView({ member, monthlyTotal, rank, monthLabel, ca
             <h1 className="font-display text-2xl font-bold text-white">{member.nicknameML || member.nama}</h1>
             <BadgeCheck className="w-5 h-5 text-amber-400" />
           </div>
-          <p className="text-sm text-slate-400 mt-1">{member.roleSquad} · {member.idML}</p>
+          <p className="text-sm text-slate-400 mt-1">{roleLabel(member)} · {member.idML}</p>
           <div className="mt-3"><StatusBadge status={member.status} size="lg" /></div>
           {canEdit && (
             <Link href="/member/profile/edit" className="gold-button inline-flex items-center gap-2 mt-4">
@@ -45,7 +46,8 @@ export default function ProfileView({ member, monthlyTotal, rank, monthLabel, ca
         <h3 className="font-display text-sm font-semibold text-slate-200 uppercase tracking-wide mb-2">Informasi</h3>
         <InfoRow label="Nickname" value={member.nicknameML} />
         <InfoRow label="Nama" value={member.nama} />
-        <InfoRow label="Role" value={member.roleSquad} />
+        <InfoRow label="Main Role" value={member.mainRole || '—'} />
+        <InfoRow label="Sub Role" value={member.subRole || '—'} />
         <InfoRow label="ID ML" value={member.idML} />
         <InfoRow label="Bergabung" value={fmtDate(member.createdAt)} />
         <InfoRow label="Total Activity Point" value={monthlyTotal.toLocaleString('id-ID')} />
@@ -70,6 +72,24 @@ export default function ProfileView({ member, monthlyTotal, rank, monthLabel, ca
           <StatCard label="Peringkat Bulan Ini" value={rank ? `#${rank}` : '—'} />
         </div>
       </div>
+
+      {/* Highrank ML (hanya jika member ada di leaderboard highrank) */}
+      {highrankInfo && (
+        <div className="dyn-card dyn-card-accent p-5 mt-5 anim-slide-up">
+          <div className="flex items-center gap-2 mb-3 text-amber-300">
+            <Award className="w-4 h-4" />
+            <h3 className="font-display text-sm font-semibold uppercase tracking-wide">Highrank ML</h3>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="dyn-card p-3.5">
+              <div className="text-slate-400 text-xs mb-1">Rank</div>
+              <div className="text-base font-display font-bold text-amber-300 leading-tight">{highrankInfo.rankName}</div>
+              <div className="text-[11px] text-slate-500 mt-0.5">{highrankInfo.point}★ bintang</div>
+            </div>
+            <StatCard label="Peringkat Highrank" value={`#${highrankInfo.position}`} accent />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

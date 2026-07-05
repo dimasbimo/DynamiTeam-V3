@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { ChevronRight, AlertTriangle, TrendingUp, Coins } from 'lucide-react';
+import { roleLabel } from '../../lib/roles';
 import {
   NyawaShards, StatusBadge, DeltaTag, fmtDate, MAX_NYAWA, ActivityMeter, getActivityZone,
   EmptyState, AvatarRing, StatCard, SectionCard, LeaderboardList,
@@ -30,7 +31,7 @@ export default function MemberDashboard({ member, history, monthlyTotal, myRank,
           <div className="min-w-0">
             <p className="text-xs text-slate-400">Welcome back,</p>
             <h1 className="font-display text-2xl font-bold text-white truncate">{member.nama}</h1>
-            <p className="text-sm text-slate-400 mt-0.5 truncate">{member.roleSquad} · {member.idML}</p>
+            <p className="text-sm text-slate-400 mt-0.5 truncate">{roleLabel(member)} · {member.idML}</p>
             <div className="mt-2.5"><StatusBadge status={member.status} /></div>
           </div>
         </div>
@@ -76,10 +77,11 @@ export default function MemberDashboard({ member, history, monthlyTotal, myRank,
               <ActivityMeter value={member.activityPoint} />
             </div>
           )}
-          <p className={`text-xs mt-3 ${msg.tone}`}>{msg.text}</p>
-          <p className="text-[11px] text-slate-500 mt-2">
-            &lt; 1.500 = nyawa berkurang · 1.500-3.000 = aman · &gt; 3.000 = nyawa bertambah
-          </p>
+          <ul className="text-xs text-slate-400 mt-3 space-y-1.5">
+            <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-rose-400 shrink-0" /> &lt; 1.500 = nyawa berkurang</li>
+            <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0" /> 1.500 - 3.000 = aman</li>
+            <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0" /> 3.000+ = nyawa bertambah</li>
+          </ul>
         </SectionCard>
 
         <SectionCard

@@ -41,9 +41,12 @@ model Member {
   activityInputted Boolean  @default(false)
   status           StatusMember @default(WASPADA)
   avatarUrl        String?
+  mainRole         String?
+  subRole          String?
 
-  user    User?
-  history WeeklyHistory[]
+  user     User?
+  history  WeeklyHistory[]
+  highrank HighrankEntry?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -63,4 +66,17 @@ model WeeklyHistory {
   note          String?
 
   createdAt DateTime @default(now())
+}
+
+model HighrankEntry {
+  id        String   @id @default(cuid())
+  member    Member   @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  memberId  String   @unique
+  rankName  String
+  point     Int      @default(0)
+  season    String?
+  note      String?
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

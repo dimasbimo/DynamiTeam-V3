@@ -2,6 +2,7 @@
 
 import { Info } from 'lucide-react';
 import { StatCard, StatusBadge, MonthSelect, EmptyState, BackLink, AvatarRing } from './ui';
+import { roleLabel } from '../lib/roles';
 
 export default function AdminActivityDetail({ member, weekRows, monthlyTotal, avg, rank, monthOptions, selectedKey, monthLabel }) {
   return (
@@ -13,7 +14,7 @@ export default function AdminActivityDetail({ member, weekRows, monthlyTotal, av
           <AvatarRing name={member.nama} src={member.avatarUrl} size={48} />
           <div>
             <h1 className="font-display text-xl font-bold text-white">Detail Activity — {member.nama}</h1>
-            <p className="text-sm text-slate-400">{member.roleSquad} · {member.idML}</p>
+            <p className="text-sm text-slate-400">{roleLabel(member)} · {member.idML}</p>
           </div>
         </div>
         <MonthSelect value={selectedKey} options={monthOptions} basePath={`/admin/activity/${member.id}`} />

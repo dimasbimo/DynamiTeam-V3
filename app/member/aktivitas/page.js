@@ -53,9 +53,11 @@ export default async function AktivitasPage() {
             <p className="font-display text-xl font-bold text-white">{member.activityPoint.toLocaleString('id-ID')}</p>
           </div>
           {member.status !== 'KICK' && <ActivityMeter value={member.activityPoint} />}
-          <p className="text-[11px] text-slate-500 mt-2">
-            &lt; 1.500 = nyawa berkurang · 1.500-3.000 = aman · &gt; 3.000 = nyawa bertambah
-          </p>
+          <ul className="text-xs text-slate-400 mt-3 space-y-1.5">
+            <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-rose-400 shrink-0" /> &lt; 1.500 = nyawa berkurang</li>
+            <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0" /> 1.500 - 3.000 = aman</li>
+            <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0" /> 3.000+ = nyawa bertambah</li>
+          </ul>
         </div>
 
         <h3 className="font-display text-sm font-semibold text-slate-300 uppercase tracking-wide mb-2">Rincian Minggu Bulan Ini</h3>

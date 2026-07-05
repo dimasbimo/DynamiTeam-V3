@@ -24,7 +24,7 @@ export default async function AdminActivityPage({ searchParams }) {
   const leaderboard = buildLeaderboard(members, historiesByMember, selectedKey);
 
   const rows = members.map((m) => ({
-    id: m.id, nama: m.nama, nicknameML: m.nicknameML, idML: m.idML, roleSquad: m.roleSquad, avatarUrl: m.avatarUrl,
+    id: m.id, nama: m.nama, nicknameML: m.nicknameML, idML: m.idML, roleSquad: m.roleSquad, mainRole: m.mainRole, subRole: m.subRole, avatarUrl: m.avatarUrl,
     nyawaCurrent: m.nyawaCurrent, status: m.status,
     total: monthlyTotalFor(m, historiesByMember[m.id] || [], selectedKey),
     rank: rankOf(m.id, leaderboard),

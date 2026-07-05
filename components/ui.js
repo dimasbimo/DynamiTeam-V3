@@ -1,4 +1,5 @@
   'use client';
+import { roleLabel } from '../lib/roles';
 
   import { useState } from 'react';
   import Link from 'next/link';
@@ -223,7 +224,7 @@
   }
 
   // Medali peringkat untuk 3 besar.
-  function RankBadge({ rank }) {
+  export function RankBadge({ rank }) {
     if (rank === 1) return <span className="inline-flex items-center justify-center w-7 h-7 rounded-full text-amber-300" style={{ background: 'rgba(245,196,81,0.16)', border: '1px solid rgba(245,196,81,0.5)' }}><Crown className="w-4 h-4" /></span>;
     if (rank === 2) return <span className="inline-flex items-center justify-center w-7 h-7 rounded-full text-slate-300" style={{ background: 'rgba(148,163,184,0.16)', border: '1px solid rgba(148,163,184,0.5)' }}><Medal className="w-4 h-4" /></span>;
     if (rank === 3) return <span className="inline-flex items-center justify-center w-7 h-7 rounded-full text-orange-300" style={{ background: 'rgba(176,141,87,0.18)', border: '1px solid rgba(176,141,87,0.55)' }}><Medal className="w-4 h-4" /></span>;
@@ -246,7 +247,7 @@
               <AvatarRing name={member.nama} src={member.avatarUrl} size={compact ? 34 : 40} />
               <div className="min-w-0 flex-1">
                 <div className="font-medium text-slate-100 truncate text-sm">{member.nicknameML || member.nama}</div>
-                <div className="text-[11px] text-slate-500 truncate">{member.roleSquad}</div>
+                <div className="text-[11px] text-slate-500 truncate">{roleLabel(member)}</div>
               </div>
               <div className="text-right shrink-0">
                 <div className="font-display font-bold text-white leading-none">{total.toLocaleString('id-ID')}</div>
@@ -330,7 +331,7 @@
       <div className="flex items-center gap-2.5 px-1">
         <img src="/logo-icon.png" alt="DynamiTeam" className="w-9 h-9 object-contain shrink-0" />
         <div className="min-w-0">
-          <div className="font-display text-lg font-bold leading-none text-white tracking-wide truncate">DynamiTeam</div>
+          <div className="font-display text-lg font-bold leading-none text-white tracking-wide truncate">Dynami Team</div>
           <div className="text-[10px] text-slate-500 leading-none mt-1 uppercase tracking-widest">{brandSub}</div>
         </div>
       </div>
@@ -362,7 +363,6 @@
     );
 
     // Bottom nav mobile: maksimal 5 item utama
-    /*const bottomItems = items.slice(0, 5);*/
 
     return (
       <div className="relative min-h-screen premium-bg bg-grid text-slate-100 font-body">
@@ -388,35 +388,42 @@
           </div>
         </header>
 
-        {/* ===== Drawer mobile ===== */}
-        {drawer && (
-          <div className="lg:hidden fixed inset-0 z-50 anim-fade" onClick={() => setDrawer(false)}>
-            <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
-            <div onClick={(e) => e.stopPropagation()}
-              className="absolute inset-y-0 left-0 w-72 max-w-[80%] sidebar-shell p-4 flex flex-col anim-slide-up">
-              <div className="flex items-center justify-between mb-3">
-                {profile ? <span className="text-[10px] text-slate-500 uppercase tracking-widest px-1">Menu</span> : <Brand />}
-                <button onClick={() => setDrawer(false)} className="p-1.5 rounded-md text-slate-400 hover:bg-slate-800" aria-label="Tutup menu"><X className="w-4 h-4" /></button>
-              </div>
-
-              {/* Header profil member ala Roblox (hanya muncul untuk member yang punya profil) */}
-              {profile && (
-                <Link href="/member/profile" onClick={() => setDrawer(false)}
-                  className="flex items-center gap-3 p-2.5 mb-3 rounded-2xl border border-amber-500/20 bg-gradient-to-br from-white/[0.04] to-transparent hover:from-white/[0.07] transition-colors">
-                  <AvatarRing name={profile.nama} src={profile.avatarUrl} size={50} />
-                  <div className="min-w-0 flex-1">
-                    <div className="font-display font-bold text-white truncate leading-tight">{profile.nama || 'Member'}</div>
-                    <div className="text-xs text-amber-400/90 truncate">{profile.roleSquad || (profile.nicknameML ? '@' + profile.nicknameML : 'Member')}</div>
-                  </div>
-                  <ChevronRight className="w-4 h-4 text-slate-500 shrink-0" />
-                </Link>
-              )}
-
-              <div className="flex-1 overflow-y-auto thin-scroll"><NavLinks onNavigate={() => setDrawer(false)} /></div>
-              <div className="pt-4 mt-4 border-t border-slate-800/70"><FooterLinks onNavigate={() => setDrawer(false)} /></div>
+        {/* ===== Drawer mobile (animasi masuk & keluar halus dari kiri) ===== */}
+        <div
+          className={`lg:hidden fixed inset-0 z-50 ${drawer ? '' : 'pointer-events-none'}`}
+          aria-hidden={!drawer}
+        >
+          {/* overlay gelap: fade in/out */}
+          <div
+            onClick={() => setDrawer(false)}
+            className={`absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300 ${drawer ? 'opacity-100' : 'opacity-0'}`}
+          />
+          {/* panel: geser dari kiri (masuk) & kembali ke kiri (keluar) */}
+          <div
+            className={`absolute inset-y-0 left-0 w-72 max-w-[80%] sidebar-shell p-4 flex flex-col will-change-transform transition-transform duration-300 ease-out ${drawer ? 'translate-x-0' : '-translate-x-full'}`}
+          >
+            <div className="flex items-center justify-between mb-3">
+              {profile ? <span className="text-[10px] text-slate-500 uppercase tracking-widest px-1">Menu</span> : <Brand />}
+              <button onClick={() => setDrawer(false)} className="p-1.5 rounded-md text-slate-400 hover:bg-slate-800" aria-label="Tutup menu"><X className="w-4 h-4" /></button>
             </div>
+
+            {/* Header profil member ala Roblox (hanya muncul untuk member yang punya profil) */}
+            {profile && (
+              <Link href="/member/profile" onClick={() => setDrawer(false)}
+                className="flex items-center gap-3 p-2.5 mb-3 rounded-2xl border border-amber-500/20 bg-gradient-to-br from-white/[0.04] to-transparent hover:from-white/[0.07] transition-colors">
+                <AvatarRing name={profile.nama} src={profile.avatarUrl} size={50} />
+                <div className="min-w-0 flex-1">
+                  <div className="font-display font-bold text-white truncate leading-tight">{profile.nama || 'Member'}</div>
+                  <div className="text-xs text-amber-400/90 truncate">{roleLabel(profile) === '-' ? (profile.nicknameML ? '@' + profile.nicknameML : 'Member') : roleLabel(profile)}</div>
+                </div>
+                <ChevronRight className="w-4 h-4 text-slate-500 shrink-0" />
+              </Link>
+            )}
+
+            <div className="flex-1 overflow-y-auto thin-scroll"><NavLinks onNavigate={() => setDrawer(false)} /></div>
+            <div className="pt-4 mt-4 border-t border-slate-800/70"><FooterLinks onNavigate={() => setDrawer(false)} /></div>
           </div>
-        )}
+        </div>
 
         {/* ===== Konten ===== */}
         <div className="lg:pl-60">

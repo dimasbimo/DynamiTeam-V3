@@ -7,7 +7,7 @@ async function GET() {
   if (!session?.user?.memberId) return Response.json({ member: null });
   const member = await prisma.member.findUnique({
     where: { id: session.user.memberId },
-    select: { id: true, nama: true, nicknameML: true, roleSquad: true, avatarUrl: true },
+    select: { id: true, nama: true, nicknameML: true, roleSquad: true, avatarUrl: true, mainRole: true, subRole: true },
   });
   return Response.json({ member });
 }

@@ -71,11 +71,27 @@ html, body {
   background: var(--dyn-panel);
   border: 1px solid var(--dyn-border);
   border-radius: 0.9rem;
+  position: relative;
+  overflow: hidden;
 }
 .dyn-card-soft {
   background: var(--dyn-panel-soft);
   border: 1px solid var(--dyn-border);
   border-radius: 0.9rem;
+  position: relative;
+  overflow: hidden;
+}
+/* Garis aksen gradien di tepi atas SEMUA card (opsi 2). Card penting
+   (.dyn-card-accent) tetap sedikit lebih terang via aturan di bawah. */
+.dyn-card::before,
+.dyn-card-soft::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--dyn-gold), var(--dyn-amber), var(--dyn-purple), transparent);
+  opacity: 0.5;
+  pointer-events: none;
 }
 
 .dyn-card-accent {
@@ -95,7 +111,7 @@ html, body {
   background: rgba(14, 20, 36, 0.66);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(245, 196, 81, 0.20);
+  border: 1px solid var(--dyn-border);
   border-radius: 1.1rem;
   box-shadow:
     0 24px 70px rgba(0, 0, 0, 0.55),

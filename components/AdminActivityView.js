@@ -4,6 +4,7 @@ import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { Search, ChevronRight } from 'lucide-react';
 import { NyawaShards, StatusBadge, MonthSelect, EmptyState, AvatarRing } from './ui';
+import { roleLabel } from '../lib/roles';
 
 export default function AdminActivityView({ rows, monthOptions, selectedKey, monthLabel }) {
   const [q, setQ] = useState('');
@@ -66,7 +67,7 @@ export default function AdminActivityView({ rows, monthOptions, selectedKey, mon
                           </div>
                         </div>
                       </td>
-                      <td className="px-4 py-3 text-slate-300">{r.roleSquad}</td>
+                      <td className="px-4 py-3 text-slate-300">{roleLabel(r)}</td>
                       <td className="px-4 py-3 text-slate-100 font-medium">{r.total.toLocaleString('id-ID')}</td>
                       <td className="px-4 py-3"><NyawaShards n={r.nyawaCurrent} /></td>
                       <td className="px-4 py-3"><StatusBadge status={r.status} /></td>
@@ -92,7 +93,7 @@ export default function AdminActivityView({ rows, monthOptions, selectedKey, mon
                   <AvatarRing name={r.nama} src={r.avatarUrl} size={36} />
                   <div className="min-w-0 flex-1">
                     <div className="font-medium text-slate-100 truncate">{r.nama}</div>
-                    <div className="text-[11px] text-slate-500">{r.roleSquad} · {r.total.toLocaleString('id-ID')} activity</div>
+                    <div className="text-[11px] text-slate-500">{roleLabel(r)} · {r.total.toLocaleString('id-ID')} activity</div>
                   </div>
                   <StatusBadge status={r.status} />
                 </div>

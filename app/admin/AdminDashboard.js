@@ -5,6 +5,7 @@ import {
   Plus, Trash2, Pencil, History as HistoryIcon, RotateCcw, Play, Users,
   Search, Loader2,
 } from 'lucide-react';
+import { roleLabel, MAIN_ROLES, SUB_ROLES } from '../../lib/roles';
 import {
   NyawaShards, StatusBadge, DeltaTag, ModalShell, Field, fmtDate, MAX_NYAWA,
   ActivityMeter, getActivityZone, EmptyState, STATUS_STYLES,
@@ -68,7 +69,7 @@ export default function AdminDashboard({ initialMembers, initialWeekNumber }) {
   const [modal, setModal] = useState(null);
   const [toast, setToast] = useState(null);
   const [drafts, setDrafts] = useState({});
-  const [form, setForm] = useState({ nama: '', nicknameML: '', idML: '', roleSquad: '', username: '', password: '' });
+  const [form, setForm] = useState({ nama: '', nicknameML: '', idML: '', roleSquad: '', mainRole: '', subRole: '', username: '', password: '' });
   const [linkToSelf, setLinkToSelf] = useState(false);
   const [historyItems, setHistoryItems] = useState([]);
   const [preview, setPreview] = useState(null);
@@ -95,8 +96,8 @@ export default function AdminDashboard({ initialMembers, initialWeekNumber }) {
     return body;
   }
 
-  const openAdd = () => { setForm({ nama: '', nicknameML: '', idML: '', roleSquad: '', username: '', password: '' }); setLinkToSelf(false); setModal({ type: 'add' }); };
-  const openEdit = (m) => { setForm({ nama: m.nama, nicknameML: m.nicknameML, idML: m.idML, roleSquad: m.roleSquad, username: '', password: '' }); setModal({ type: 'edit', id: m.id }); };
+  const openAdd = () => { setForm({ nama: '', nicknameML: '', idML: '', roleSquad: '', mainRole: '', subRole: '', username: '', password: '' }); setLinkToSelf(false); setModal({ type: 'add' }); };
+  const openEdit = (m) => { setForm({ nama: m.nama, nicknameML: m.nicknameML, idML: m.idML, roleSquad: m.roleSquad, mainRole: m.mainRole || '', subRole: m.subRole || '', username: '', password: '' }); setModal({ type: 'edit', id: m.id }); };
 
   async function submitForm() {
     if (!form.nama.trim() || !form.nicknameML.trim()) { showError('Nama dan nickname wajib diisi.'); return; }
@@ -315,7 +316,7 @@ export default function AdminDashboard({ initialMembers, initialWeekNumber }) {
                     <tr key={m.id} className={`border-b border-slate-800/60 last:border-0 ${m.status === 'KICK' ? 'opacity-60' : ''}`}>
                       <td className="px-4 py-3">
                         <div className="font-medium text-slate-100">{m.nama}</div>
-                        <div className="text-xs text-slate-400">{m.nicknameML} · {m.roleSquad}</div>
+                        <div className="text-xs text-slate-400">{m.nicknameML} · {roleLabel(m)}</div>
                       </td>
                       <td className="px-4 py-3 text-slate-300 text-xs">{m.idML}</td>
                       <td className="px-4 py-3"><NyawaShards n={m.nyawaCurrent} /></td>
@@ -345,7 +346,7 @@ export default function AdminDashboard({ initialMembers, initialWeekNumber }) {
                 <div className="flex items-start justify-between gap-3 mb-3">
                   <div className="min-w-0">
                     <div className="font-medium text-slate-100 truncate">{m.nama}</div>
-                    <div className="text-xs text-slate-400 truncate">{m.nicknameML} · {m.roleSquad}</div>
+                    <div className="text-xs text-slate-400 truncate">{m.nicknameML} · {roleLabel(m)}</div>
                     <div className="text-[11px] text-slate-500 mt-0.5">{m.idML}</div>
                   </div>
                   <StatusBadge status={m.status} />
@@ -371,8 +372,21 @@ export default function AdminDashboard({ initialMembers, initialWeekNumber }) {
           <div className="space-y-3">
             <Field label="Nama"><input value={form.nama} onChange={(e) => setForm((f) => ({ ...f, nama: e.target.value }))} className="input" /></Field>
             <Field label="Nickname Mobile Legends"><input value={form.nicknameML} onChange={(e) => setForm((f) => ({ ...f, nicknameML: e.target.value }))} className="input" /></Field>
-            <Field label="ID Mobile Legends"><input value={form.idML} onChange={(e) => setForm((f) => ({ ...f, idML: e.target.value }))} placeholder="123456789 (0000)" className="input" /></Field>
-            <Field label="Role / Posisi"><input value={form.roleSquad} onChange={(e) => setForm((f) => ({ ...f, roleSquad: e.target.value }))} placeholder="Jungler, Roamer, dsb." className="input" /></Field>
+            <Field label="ID Mobile Legends"><input value={form.idML} onChange={(e) => setForm((f) => ({ ...f, idML: e.target.value }))} placeholder="123456789" className="input" /></Field>
+            <div className="grid grid-cols-2 gap-3">
+              <Field label="Main Role">
+                <select value={form.mainRole} onChange={(e) => setForm((f) => ({ ...f, mainRole: e.target.value }))} className="input">
+                  <option value="">— Pilih —</option>
+                  {MAIN_ROLES.map((r) => <option key={r} value={r}>{r}</option>)}
+                </select>
+              </Field>
+              <Field label="Sub Role">
+                <select value={form.subRole} onChange={(e) => setForm((f) => ({ ...f, subRole: e.target.value }))} className="input">
+                  <option value="">— Pilih —</option>
+                  {SUB_ROLES.map((r) => <option key={r} value={r}>{r}</option>)}
+                </select>
+              </Field>
+            </div>
             {modal.type === 'add' && (
               <>
                 <label className="flex items-start gap-2 cursor-pointer rounded-lg border border-slate-700 bg-slate-800/50 p-3">
