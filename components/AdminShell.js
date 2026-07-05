@@ -1,12 +1,11 @@
 'use client';
 
 import Link from 'next/link';
-import { LayoutDashboard, Users, Activity, Trophy, Settings, User } from 'lucide-react';
+import { LayoutDashboard, Activity, Trophy, Settings, User } from 'lucide-react';
 import { AppShell } from './ui';
 
 const ITEMS = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/admin', label: 'Kelola Member', icon: Users },
   { href: '/admin/activity', label: 'Activity Bulanan', icon: Activity, badge: 'Baru' },
   { href: '/admin/leaderboard', label: 'Leaderboard', icon: Trophy },
   { href: '/admin/settings', label: 'Pengaturan', icon: Settings },

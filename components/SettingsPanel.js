@@ -1,8 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { KeyRound, Loader2, Check } from 'lucide-react';
+import { KeyRound, Loader2, Check, Smartphone } from 'lucide-react';
 import { Field } from './ui';
+import InstallButton from './InstallButton';
 
 export default function SettingsPanel() {
   const [currentPassword, setCur] = useState('');
@@ -61,6 +62,14 @@ export default function SettingsPanel() {
             </button>
           </div>
         </div>
+      </div>
+
+      <div className="dyn-card dyn-card-accent p-5 mt-4">
+        <h3 className="font-display text-sm font-semibold text-slate-200 uppercase tracking-wide flex items-center gap-2 mb-3">
+          <Smartphone className="w-4 h-4 text-amber-400" /> Aplikasi
+        </h3>
+        <p className="text-xs text-slate-400 mb-4">Install DynamiTeam ke home screen HP agar terasa seperti aplikasi.</p>
+        <InstallButton />
       </div>
     </div>
   );

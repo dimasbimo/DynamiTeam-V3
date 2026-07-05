@@ -10,7 +10,7 @@ export default function AdminActivityDetail({ member, weekRows, monthlyTotal, av
 
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5">
         <div className="flex items-center gap-3">
-          <AvatarRing name={member.nama} size={48} />
+          <AvatarRing name={member.nama} src={member.avatarUrl} size={48} />
           <div>
             <h1 className="font-display text-xl font-bold text-white">Detail Activity — {member.nama}</h1>
             <p className="text-sm text-slate-400">{member.roleSquad} · {member.idML}</p>

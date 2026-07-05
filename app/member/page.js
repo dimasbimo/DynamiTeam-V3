@@ -68,6 +68,7 @@ export default async function MemberPage() {
     nama: r.member.nama,
     nicknameML: r.member.nicknameML,
     roleSquad: r.member.roleSquad,
+    avatarUrl: r.member.avatarUrl,
     total: r.total,
     rank: r.rank,
   }));

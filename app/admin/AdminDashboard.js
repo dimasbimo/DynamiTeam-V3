@@ -1,17 +1,14 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
-import { signOut } from 'next-auth/react';
-import Link from 'next/link';
 import {
-  Plus, Trash2, Pencil, History as HistoryIcon, RotateCcw, Play, Users, LogOut,
-  KeyRound, User, Search, Loader2, Activity, Trophy,
+  Plus, Trash2, Pencil, History as HistoryIcon, RotateCcw, Play, Users,
+  Search, Loader2,
 } from 'lucide-react';
 import {
   NyawaShards, StatusBadge, DeltaTag, ModalShell, Field, fmtDate, MAX_NYAWA,
-  ActivityMeter, getActivityZone, EmptyState, STATUS_STYLES, PageBackdrop,
+  ActivityMeter, getActivityZone, EmptyState, STATUS_STYLES,
 } from '../../components/ui';
-import ChangePasswordModal from '../../components/ChangePasswordModal';
 
 const FILTERS = [
   { key: 'ALL', label: 'Semua' },
@@ -76,7 +73,6 @@ export default function AdminDashboard({ initialMembers, initialWeekNumber }) {
   const [historyItems, setHistoryItems] = useState([]);
   const [preview, setPreview] = useState(null);
   const [busy, setBusy] = useState(false);
-  const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('ALL');
 
@@ -229,37 +225,7 @@ export default function AdminDashboard({ initialMembers, initialWeekNumber }) {
   const activityProps = { drafts, setDrafts, commitActivity };
 
   return (
-    <div className="relative min-h-screen font-body text-slate-100 bg-grid">
-      <PageBackdrop />
-      {/* Header */}
-      <div className="border-b border-slate-800/70 bg-[#0d1220]/80 backdrop-blur sticky top-0 z-20">
-        <div className="max-w-6xl mx-auto px-4 sm:px-5 py-3.5 flex items-center justify-between gap-3">
-          <div className="flex items-center gap-2.5 min-w-0">
-            <img src="/logo-icon.png" alt="DynamiTeam" className="w-9 h-9 sm:w-10 sm:h-10 object-contain shrink-0" />
-            <div className="min-w-0">
-              <h1 className="font-display text-lg sm:text-xl font-bold leading-none text-white tracking-wide truncate">DynamiTeam</h1>
-              <p className="text-[11px] text-slate-400 leading-none mt-0.5">Admin · Minggu ke-{weekNumber}</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-1 sm:gap-3 shrink-0">
-            <Link href="/admin/activity" title="Activity Bulanan" className="inline-flex items-center gap-1.5 text-sm text-slate-400 hover:text-amber-300 p-2 sm:p-0">
-              <Activity className="w-4 h-4" /><span className="hidden sm:inline">Activity Bulanan</span>
-            </Link>
-            <Link href="/admin/leaderboard" title="Leaderboard" className="inline-flex items-center gap-1.5 text-sm text-slate-400 hover:text-amber-300 p-2 sm:p-0">
-              <Trophy className="w-4 h-4" /><span className="hidden sm:inline">Leaderboard</span>
-            </Link>
-            <Link href="/member" title="Dashboard Member Saya" className="inline-flex items-center gap-1.5 text-sm text-amber-400 hover:text-amber-300 p-2 sm:p-0">
-              <User className="w-4 h-4" /><span className="hidden sm:inline">Member</span>
-            </Link>
-            <button onClick={() => setShowPasswordModal(true)} title="Ganti Password" className="inline-flex items-center gap-1.5 text-sm text-slate-400 hover:text-slate-200 p-2 sm:p-0">
-              <KeyRound className="w-4 h-4" /><span className="hidden sm:inline">Ganti Password</span>
-            </button>
-            <button onClick={() => signOut({ callbackUrl: '/login' })} title="Keluar" className="inline-flex items-center gap-1.5 text-sm text-slate-400 hover:text-slate-200 p-2 sm:p-0">
-              <LogOut className="w-4 h-4" /><span className="hidden sm:inline">Keluar</span>
-            </button>
-          </div>
-        </div>
-      </div>
+    <>
 
       {/* Toast */}
       {toast && (
@@ -268,7 +234,19 @@ export default function AdminDashboard({ initialMembers, initialWeekNumber }) {
         </div>
       )}
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-5 py-5 sm:py-6">
+      <div>
+        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-5 anim-fade">
+          <div>
+            <p className="text-xs uppercase tracking-[0.22em] text-amber-300/80 mb-1">Admin Panel</p>
+            <h1 className="font-display text-2xl sm:text-3xl font-bold text-white">Dashboard Admin</h1>
+            <p className="text-sm text-slate-400 mt-1">Kelola member, input activity point, dan proses nyawa mingguan.</p>
+          </div>
+          <div className="dyn-card dyn-card-accent px-4 py-3 sm:text-right">
+            <div className="text-[11px] text-slate-500 uppercase tracking-wider">Proses Berikutnya</div>
+            <div className="font-display text-xl font-bold text-white">Minggu ke-{weekNumber}</div>
+          </div>
+        </div>
+
         {/* Stat cards */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-6 anim-fade">
           <div className="dyn-card dyn-card-accent p-3.5">
@@ -552,12 +530,6 @@ export default function AdminDashboard({ initialMembers, initialWeekNumber }) {
         </ModalShell>
       )}
 
-      {showPasswordModal && (
-        <ChangePasswordModal
-          onClose={() => setShowPasswordModal(false)}
-          onSuccess={() => showOk('Password berhasil diganti.')}
-        />
-      )}
-    </div>
+    </>
   );
 }

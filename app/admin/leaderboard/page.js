@@ -23,7 +23,7 @@ export default async function AdminLeaderboardPage({ searchParams }) {
 
   const rows = buildLeaderboard(allMembers, historiesByMember, selectedKey).map((r) => ({
     id: r.member.id, nama: r.member.nama, nicknameML: r.member.nicknameML,
-    roleSquad: r.member.roleSquad, total: r.total, rank: r.rank,
+    roleSquad: r.member.roleSquad, avatarUrl: r.member.avatarUrl, total: r.total, rank: r.rank,
   }));
 
   return (

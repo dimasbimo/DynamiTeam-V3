@@ -26,7 +26,7 @@ export default function MemberDashboard({ member, history, monthlyTotal, myRank,
       {/* ===== Welcome hero + total activity ===== */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 anim-slide-up">
         <div className="lg:col-span-2 dyn-card dyn-card-accent p-5 flex items-center gap-4">
-          <AvatarRing name={member.nama} size={64} danger={isCritical} />
+          <AvatarRing name={member.nama} src={member.avatarUrl} size={64} danger={isCritical} />
           <div className="min-w-0">
             <p className="text-xs text-slate-400">Welcome back,</p>
             <h1 className="font-display text-2xl font-bold text-white truncate">{member.nama}</h1>

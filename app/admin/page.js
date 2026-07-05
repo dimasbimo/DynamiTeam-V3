@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation';
 import { getSession } from '../../lib/session';
 import { prisma } from '../../lib/prisma';
+import AdminShell from '../../components/AdminShell';
 import AdminDashboard from './AdminDashboard';
 
 export default async function AdminPage() {
@@ -11,5 +12,9 @@ export default async function AdminPage() {
   const lastWeek = await prisma.weeklyHistory.aggregate({ _max: { mingguKe: true } });
   const weekNumber = (lastWeek._max.mingguKe || 0) + 1;
 
-  return <AdminDashboard initialMembers={members} initialWeekNumber={weekNumber} />;
+  return (
+    <AdminShell>
+      <AdminDashboard initialMembers={members} initialWeekNumber={weekNumber} />
+    </AdminShell>
+  );
 }

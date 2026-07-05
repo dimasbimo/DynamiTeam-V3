@@ -59,7 +59,7 @@ export default function AdminActivityView({ rows, monthOptions, selectedKey, mon
                       <td className="px-4 py-3 text-slate-400 font-display">{r.rank ? `#${r.rank}` : '—'}</td>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-2.5">
-                          <AvatarRing name={r.nama} size={32} />
+                          <AvatarRing name={r.nama} src={r.avatarUrl} size={32} />
                           <div className="min-w-0">
                             <div className="font-medium text-slate-100 truncate">{r.nama}</div>
                             <div className="text-[11px] text-slate-500 truncate">{r.nicknameML}</div>
@@ -89,7 +89,7 @@ export default function AdminActivityView({ rows, monthOptions, selectedKey, mon
               <Link key={r.id} href={`/admin/activity/${r.id}?month=${selectedKey}`} className="block dyn-card p-3.5">
                 <div className="flex items-center gap-3">
                   <span className="font-display text-slate-400 w-6">{r.rank ? `#${r.rank}` : '—'}</span>
-                  <AvatarRing name={r.nama} size={36} />
+                  <AvatarRing name={r.nama} src={r.avatarUrl} size={36} />
                   <div className="min-w-0 flex-1">
                     <div className="font-medium text-slate-100 truncate">{r.nama}</div>
                     <div className="text-[11px] text-slate-500">{r.roleSquad} · {r.total.toLocaleString('id-ID')} activity</div>

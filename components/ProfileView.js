@@ -25,7 +25,7 @@ export default function ProfileView({ member, monthlyTotal, rank, monthLabel, ca
           style={{ background: 'radial-gradient(120% 120% at 15% 0%, rgba(245,196,81,0.16), transparent 55%), radial-gradient(120% 120% at 100% 100%, rgba(139,92,246,0.12), transparent 55%)' }} />
         <div aria-hidden className="absolute inset-x-0 top-0 h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(245,196,81,0.6), transparent)' }} />
         <div className="relative p-6 flex flex-col items-center text-center">
-          <AvatarRing name={member.nama} size={96} danger={isCritical} />
+          <AvatarRing name={member.nama} src={member.avatarUrl} size={96} danger={isCritical} />
           <div className="mt-3 flex items-center gap-1.5">
             <h1 className="font-display text-2xl font-bold text-white">{member.nicknameML || member.nama}</h1>
             <BadgeCheck className="w-5 h-5 text-amber-400" />
