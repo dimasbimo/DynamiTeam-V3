@@ -301,7 +301,9 @@ export default function AdminDashboard({ initialMembers, initialWeekNumber, acti
             <p className="text-xs uppercase tracking-[0.22em] text-amber-300/80 mb-1">Admin Panel</p>
             <h1 className="font-display text-2xl sm:text-3xl font-bold text-white">Dashboard Admin</h1>
             <p className="text-sm text-slate-400 mt-1">Kelola member, input activity point, dan proses nyawa mingguan.</p>
-            <p className="text-xs text-slate-500 mt-1">Aturan aktif: &lt; {activityRule.safePoint.toLocaleString('id-ID')} nyawa berkurang · {activityRule.safePoint.toLocaleString('id-ID')} - {(activityRule.bonusPoint - 1).toLocaleString('id-ID')} aman · {activityRule.bonusPoint.toLocaleString('id-ID')}+ tambah nyawa.</p>
+            <p className="text-xs text-slate-500 mt-1">Aturan aktif: <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-rose-400 shrink-0" /> &lt; {activityRule.safePoint.toLocaleString('id-ID')} nyawa berkurang</li>
+            <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0" /> {activityRule.safePoint.toLocaleString('id-ID')} - {(activityRule.bonusPoint - 1).toLocaleString('id-ID')} aman</li>
+            <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0" /> {activityRule.bonusPoint.toLocaleString('id-ID')}+ tambah nyawa.</li></p>
           </div>
           <div className="dyn-card dyn-card-accent px-4 py-3 sm:text-right">
             <div className="text-[11px] text-slate-500 uppercase tracking-wider">Proses Berikutnya</div>
