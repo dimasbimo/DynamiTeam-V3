@@ -1,13 +1,14 @@
 'use client';
 
 import Link from 'next/link';
-import { LayoutDashboard, Activity, Settings, User, Award } from 'lucide-react';
+import { LayoutDashboard, Activity, Settings, User, Award, SlidersHorizontal } from 'lucide-react';
 import { AppShell } from './ui';
 
 const ITEMS = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/admin/activity', label: 'Activity Bulanan', icon: Activity, badge: 'Baru' },
   { href: '/admin/highrank', label: 'Highrank ML', icon: Award },
+  { href: '/admin/rules', label: 'Aturan Activity', icon: SlidersHorizontal },
   { href: '/admin/settings', label: 'Pengaturan', icon: Settings },
 ];
 

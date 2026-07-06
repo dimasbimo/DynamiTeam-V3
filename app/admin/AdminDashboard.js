@@ -8,7 +8,7 @@ import {
 import { roleLabel, MAIN_ROLES, SUB_ROLES } from '../../lib/roles';
 import {
   NyawaShards, StatusBadge, DeltaTag, ModalShell, Field, fmtDate, MAX_NYAWA,
-  ActivityMeter, getActivityZone, EmptyState, STATUS_STYLES,
+  ActivityMeter, getActivityZone, EmptyState, STATUS_STYLES, DEFAULT_ACTIVITY_RULE,
 } from '../../components/ui';
 
 const FILTERS = [
@@ -59,10 +59,15 @@ function ActionButtons({ m, large = false, onHistory, onEdit, onReset, onAddLife
   );
 }
 
-function ActivityInput({ m, withMeter = false, drafts, setDrafts, commitActivity }) {
+function ActivityInput({ m, withMeter = false, drafts, setDrafts, commitActivity, activityRule = DEFAULT_ACTIVITY_RULE, penaltyMap = {} }) {
   const isKick = m.status === 'KICK';
   const draftVal = drafts[m.id] !== undefined ? drafts[m.id] : m.activityPoint;
-  const zone = getActivityZone(m.activityPoint);
+  const extraPoint = penaltyMap[m.id] || 0;
+  const memberRule = {
+    safePoint: activityRule.safePoint + extraPoint,
+    bonusPoint: activityRule.bonusPoint + extraPoint,
+  };
+  const zone = getActivityZone(m.activityPoint, memberRule);
   return (
     <div>
       <div className="flex items-center gap-2">
@@ -76,15 +81,20 @@ function ActivityInput({ m, withMeter = false, drafts, setDrafts, commitActivity
         />
         {!isKick && <span className={`text-[11px] font-medium ${zone.text}`}>{zone.label}</span>}
       </div>
-      {withMeter && !isKick && <div className="mt-2"><ActivityMeter value={m.activityPoint} showLabel={false} /></div>}
+      {withMeter && !isKick && <div className="mt-2"><ActivityMeter value={m.activityPoint} showLabel={false} rule={memberRule} /></div>}
       <div className={`text-[11px] mt-1 ${m.activityInputted ? 'text-emerald-400' : 'text-slate-500'}`}>
         {isKick ? 'Terkunci (Kick)' : m.activityInputted ? 'Siap diproses' : 'Belum diinput minggu ini'}
       </div>
+      {!isKick && extraPoint > 0 && (
+        <div className="text-[11px] text-amber-300 mt-1">
+          Hukuman target +{extraPoint.toLocaleString('id-ID')} activity
+        </div>
+      )}
     </div>
   );
 }
 
-export default function AdminDashboard({ initialMembers, initialWeekNumber }) {
+export default function AdminDashboard({ initialMembers, initialWeekNumber, activityRule = DEFAULT_ACTIVITY_RULE, penaltyMap = {} }) {
   const [members, setMembers] = useState(initialMembers);
   const [weekNumber, setWeekNumber] = useState(initialWeekNumber);
   const [modal, setModal] = useState(null);
@@ -273,7 +283,7 @@ export default function AdminDashboard({ initialMembers, initialWeekNumber }) {
   onDecreaseLife: (id) => setModal({ type: 'decreaseLifeConfirm', id }),
   onDelete: (id) => setModal({ type: 'deleteConfirm', id }),
   };
-  const activityProps = { drafts, setDrafts, commitActivity };
+  const activityProps = { drafts, setDrafts, commitActivity, activityRule, penaltyMap };
 
   return (
     <>
@@ -291,6 +301,7 @@ export default function AdminDashboard({ initialMembers, initialWeekNumber }) {
             <p className="text-xs uppercase tracking-[0.22em] text-amber-300/80 mb-1">Admin Panel</p>
             <h1 className="font-display text-2xl sm:text-3xl font-bold text-white">Dashboard Admin</h1>
             <p className="text-sm text-slate-400 mt-1">Kelola member, input activity point, dan proses nyawa mingguan.</p>
+            <p className="text-xs text-slate-500 mt-1">Aturan aktif: &lt; {activityRule.safePoint.toLocaleString('id-ID')} nyawa berkurang · {activityRule.safePoint.toLocaleString('id-ID')} - {(activityRule.bonusPoint - 1).toLocaleString('id-ID')} aman · {activityRule.bonusPoint.toLocaleString('id-ID')}+ tambah nyawa.</p>
           </div>
           <div className="dyn-card dyn-card-accent px-4 py-3 sm:text-right">
             <div className="text-[11px] text-slate-500 uppercase tracking-wider">Proses Berikutnya</div>
@@ -611,7 +622,17 @@ export default function AdminDashboard({ initialMembers, initialWeekNumber }) {
                       {preview.preview.map((p) => (
                         <tr key={p.id} className="border-b border-slate-800/60 last:border-0">
                           <td className="px-3 py-2 text-slate-200">{p.nama}</td>
-                          <td className="px-3 py-2 text-slate-300">{p.activityPoint.toLocaleString('id-ID')}</td>
+                          <td className="px-3 py-2 text-slate-300">
+                            {p.activityPoint.toLocaleString('id-ID')}
+                            <div className="text-[10px] text-slate-500 mt-0.5">
+                              Target: aman {p.safePoint.toLocaleString('id-ID')} · bonus {p.bonusPoint.toLocaleString('id-ID')}
+                            </div>
+                            {p.penaltyExtraPoint > 0 && (
+                              <div className="text-[10px] text-amber-300 mt-0.5">
+                                Hukuman target +{p.penaltyExtraPoint.toLocaleString('id-ID')}
+                              </div>
+                            )}
+                          </td>
                           <td className="px-3 py-2 whitespace-nowrap">{p.nyawaBefore} → {p.nyawaAfter} <DeltaTag delta={p.delta} /></td>
                           <td className="px-3 py-2"><StatusBadge status={p.statusAfter} /></td>
                         </tr>

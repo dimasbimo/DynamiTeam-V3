@@ -11,6 +11,18 @@ import { roleLabel } from '../lib/roles';
   } from 'lucide-react';
 
   export const MAX_NYAWA = 4;
+  export const DEFAULT_ACTIVITY_RULE = { safePoint: 1500, bonusPoint: 3000 };
+
+  function normalizeActivityRule(rule) {
+    return {
+      safePoint: Number(rule?.safePoint ?? DEFAULT_ACTIVITY_RULE.safePoint),
+      bonusPoint: Number(rule?.bonusPoint ?? DEFAULT_ACTIVITY_RULE.bonusPoint),
+    };
+  }
+
+  function fmtPoint(value) {
+    return Number(value || 0).toLocaleString('id-ID');
+  }
 
   export const STATUS_STYLES = {
     AMAN: { label: 'Aman', text: 'text-emerald-400', bg: 'bg-emerald-500/10', border: 'border-emerald-500/30', icon: ShieldCheck },
@@ -67,27 +79,35 @@ import { roleLabel } from '../lib/roles';
     return <span className="inline-flex items-center gap-0.5 text-slate-400"><Minus className="w-3.5 h-3.5" />0</span>;
   }
 
-  // Zona activity: <1500 bahaya, 1500-3000 aman, >3000 bonus
-  export function getActivityZone(value) {
-    if (value < 1500) return { key: 'danger', label: 'Bahaya', text: 'text-rose-400', fill: '#f43f5e' };
-    if (value <= 3000) return { key: 'safe', label: 'Aman', text: 'text-emerald-400', fill: '#34d399' };
+  // Zona activity mengikuti aturan aktif admin.
+  export function getActivityZone(value, rule = DEFAULT_ACTIVITY_RULE) {
+    const r = normalizeActivityRule(rule);
+    const point = Number(value) || 0;
+
+    if (point < r.safePoint) return { key: 'danger', label: 'Bahaya', text: 'text-rose-400', fill: '#f43f5e' };
+    if (point < r.bonusPoint) return { key: 'safe', label: 'Aman', text: 'text-emerald-400', fill: '#34d399' };
     return { key: 'bonus', label: 'Bonus nyawa', text: 'text-amber-300', fill: '#f59e0b' };
   }
 
-  // Bar segmented: skala 0..4500, penanda ambang di 1500 dan 3000.
-  export function ActivityMeter({ value, showLabel = true }) {
-    const zone = getActivityZone(value);
-    const pct = Math.min(value / 4500, 1) * 100;
+  // Bar activity: penanda ambang mengikuti safePoint dan bonusPoint dari admin.
+  export function ActivityMeter({ value, showLabel = true, rule = DEFAULT_ACTIVITY_RULE }) {
+    const r = normalizeActivityRule(rule);
+    const zone = getActivityZone(value, r);
+    const maxScale = Math.max(r.bonusPoint + Math.ceil(r.bonusPoint * 0.5), r.bonusPoint + 1, 1);
+    const pct = Math.min((Number(value) || 0) / maxScale, 1) * 100;
+    const safePct = Math.min(r.safePoint / maxScale, 1) * 100;
+    const bonusPct = Math.min(r.bonusPoint / maxScale, 1) * 100;
+
     return (
       <div>
         <div className="relative h-2 rounded-full overflow-hidden" style={{ background: '#151d31' }}>
           <div className="absolute inset-y-0 left-0 rounded-full transition-all" style={{ width: `${pct}%`, background: zone.fill, opacity: 0.9 }} />
-          <div className="absolute inset-y-0 w-px bg-slate-500/70" style={{ left: '33.33%' }} />
-          <div className="absolute inset-y-0 w-px bg-slate-500/70" style={{ left: '66.66%' }} />
+          <div className="absolute inset-y-0 w-px bg-slate-500/70" style={{ left: `${safePct}%` }} />
+          <div className="absolute inset-y-0 w-px bg-slate-500/70" style={{ left: `${bonusPct}%` }} />
         </div>
         {showLabel && (
           <div className="flex justify-between text-[10px] text-slate-500 mt-1">
-            <span>0</span><span>1.500</span><span>3.000</span><span>&gt;</span>
+            <span>0</span><span>{fmtPoint(r.safePoint)}</span><span>{fmtPoint(r.bonusPoint)}</span><span>&gt;</span>
           </div>
         )}
       </div>

@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { getSession } from '../../lib/session';
 import { prisma } from '../../lib/prisma';
 import { monthKey, monthlyTotalFor, buildLeaderboard, rankOf, isActivityHistory } from '../../lib/monthly';
+import { getActiveActivityRule, getActivePenaltyMap, getEffectiveActivityRule, toPlainRule } from '../../lib/activityRules';
 import MemberShell from '../../components/MemberShell';
 import MemberDashboard from './MemberDashboard';
 
@@ -40,9 +41,11 @@ export default async function MemberPage() {
     );
   }
 
-  const [allMembers, allHistory] = await Promise.all([
+  const [allMembers, allHistory, activityRule, penaltyMap] = await Promise.all([
     prisma.member.findMany({ orderBy: { createdAt: 'asc' } }),
     prisma.weeklyHistory.findMany({ orderBy: [{ mingguKe: 'desc' }, { createdAt: 'desc' }] }),
+    getActiveActivityRule(),
+    getActivePenaltyMap(),
   ]);
 
   const historiesByMember = {};
@@ -56,7 +59,6 @@ export default async function MemberPage() {
   const monthlyTotal = monthlyTotalFor(member, myHistory, curKey);
   const myRank = rankOf(member.id, leaderboard);
 
-  // Delta activity dibanding minggu sebelumnya (dari 2 history terbaru).
   const activityOnlyHistory = myHistory.filter(isActivityHistory);
 
   let prevDelta = null;
@@ -66,7 +68,9 @@ export default async function MemberPage() {
       (activityOnlyHistory[1].activityPoint || 0);
   }
 
-  // Kirim hanya field yang dibutuhkan preview leaderboard (ringkas & serializable).
+  const penaltyExtraPoint = penaltyMap[member.id] || 0;
+  const effectiveRule = getEffectiveActivityRule(activityRule, penaltyExtraPoint);
+
   const leaderboardPreview = leaderboard.slice(0, 5).map((r) => ({
     id: r.member.id,
     nama: r.member.nama,
@@ -89,6 +93,8 @@ export default async function MemberPage() {
         prevDelta={prevDelta}
         leaderboardPreview={leaderboardPreview}
         totalMembers={allMembers.filter((m) => m.status !== 'KICK').length}
+        activityRule={toPlainRule(effectiveRule)}
+        penaltyExtraPoint={penaltyExtraPoint}
       />
     </MemberShell>
   );

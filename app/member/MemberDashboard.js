@@ -4,21 +4,25 @@ import Link from 'next/link';
 import { ChevronRight, AlertTriangle, TrendingUp, Coins } from 'lucide-react';
 import { roleLabel } from '../../lib/roles';
 import {
-  NyawaShards, StatusBadge, DeltaTag, fmtDate, MAX_NYAWA, ActivityMeter, getActivityZone,
+  NyawaShards, StatusBadge, DeltaTag, fmtDate, MAX_NYAWA, ActivityMeter, getActivityZone, DEFAULT_ACTIVITY_RULE,
   EmptyState, AvatarRing, StatCard, SectionCard, LeaderboardList,
 } from '../../components/ui';
 
-function activityMessage(m) {
+function fmtPoint(value) {
+  return Number(value || 0).toLocaleString('id-ID');
+}
+
+function activityMessage(m, activityRule = DEFAULT_ACTIVITY_RULE) {
   if (m.status === 'KICK') return { text: 'Status kamu saat ini Kick. Hubungi admin squad untuk kesempatan bergabung kembali.', tone: 'text-slate-400' };
   if (!m.activityInputted) return { text: 'Activity minggu ini belum diinput admin.', tone: 'text-slate-400' };
-  const zone = getActivityZone(m.activityPoint);
+  const zone = getActivityZone(m.activityPoint, activityRule);
   if (zone.key === 'danger') return { text: 'Activity kamu masih kurang — hati-hati, nyawa bisa berkurang saat proses mingguan.', tone: 'text-rose-400' };
   if (zone.key === 'safe') return { text: 'Kamu aman minggu ini. Pertahankan!', tone: 'text-emerald-400' };
   return { text: 'Mantap! Kamu berpeluang menambah nyawa minggu ini.', tone: 'text-amber-300' };
 }
 
-export default function MemberDashboard({ member, history, monthlyTotal, myRank, prevDelta, leaderboardPreview }) {
-  const msg = activityMessage(member);
+export default function MemberDashboard({ member, history, monthlyTotal, myRank, prevDelta, leaderboardPreview, activityRule = DEFAULT_ACTIVITY_RULE, penaltyExtraPoint = 0 }) {
+  const msg = activityMessage(member, activityRule);
   const isCritical = member.nyawaCurrent === 1 && member.status !== 'KICK';
   const previewHistory = history.slice(0, 4);
 
@@ -74,14 +78,19 @@ export default function MemberDashboard({ member, history, monthlyTotal, myRank,
           </div>
           {member.status !== 'KICK' && (
             <div className="mt-3">
-              <ActivityMeter value={member.activityPoint} />
+              <ActivityMeter value={member.activityPoint} rule={activityRule} />
             </div>
           )}
           <ul className="text-xs text-slate-400 mt-3 space-y-1.5">
-            <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-rose-400 shrink-0" /> &lt; 1.500 = nyawa berkurang</li>
-            <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0" /> 1.500 - 3.000 = aman</li>
-            <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0" /> 3.000+ = nyawa bertambah</li>
+            <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-rose-400 shrink-0" /> &lt; {fmtPoint(activityRule.safePoint)} = nyawa berkurang</li>
+            <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0" /> {fmtPoint(activityRule.safePoint)} - {fmtPoint(activityRule.bonusPoint - 1)} = aman</li>
+            <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0" /> {fmtPoint(activityRule.bonusPoint)}+ = nyawa bertambah</li>
           </ul>
+          {penaltyExtraPoint > 0 && (
+            <div className="mt-3 rounded-lg border border-amber-500/30 bg-amber-500/[0.06] px-3 py-2 text-xs text-amber-200">
+              Target kamu naik +{fmtPoint(penaltyExtraPoint)} activity minggu ini karena hukuman tambahan dari admin.
+            </div>
+          )}
         </SectionCard>
 
         <SectionCard

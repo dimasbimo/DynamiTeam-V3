@@ -47,6 +47,7 @@ model Member {
   user     User?
   history  WeeklyHistory[]
   highrank HighrankEntry?
+  activityPenalties ActivityPenalty[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -79,4 +80,28 @@ model HighrankEntry {
   order     Int      @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+
+model ActivityRule {
+  id         String   @id @default(cuid())
+  safePoint  Int      @default(1500)
+  bonusPoint Int      @default(3000)
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model ActivityPenalty {
+  id         String   @id @default(cuid())
+  member     Member   @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  memberId   String
+  extraPoint Int      @default(0)
+  reason     String?
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([memberId])
+  @@index([isActive])
 }

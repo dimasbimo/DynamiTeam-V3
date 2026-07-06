@@ -1,6 +1,7 @@
 'use client';
 
 import { StatusBadge, DeltaTag, EmptyState, fmtDate } from './ui';
+import { isManualHistory } from '../lib/monthly';
 
 export default function HistoryTable({
   history,
@@ -18,7 +19,8 @@ export default function HistoryTable({
   return (
     <div className="space-y-2.5 anim-fade">
       {history.map((h) => {
-        const isManual = Boolean(h.note);
+        const isManual = isManualHistory(h);
+        const hasRuleNote = Boolean(h.note) && !isManual;
 
         return (
           <div key={h.id} className="dyn-card p-3.5">
@@ -31,6 +33,11 @@ export default function HistoryTable({
                 {isManual && (
                   <div className="text-[11px] text-amber-300 mt-1">
                     Aksi manual admin
+                  </div>
+                )}
+                {hasRuleNote && (
+                  <div className="text-[11px] text-sky-300 mt-1">
+                    Proses activity mingguan
                   </div>
                 )}
               </div>
