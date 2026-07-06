@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { getSession } from '../../lib/session';
 import { prisma } from '../../lib/prisma';
-import { monthKey, monthlyTotalFor, buildLeaderboard, rankOf } from '../../lib/monthly';
+import { monthKey, monthlyTotalFor, buildLeaderboard, rankOf, isActivityHistory } from '../../lib/monthly';
 import MemberShell from '../../components/MemberShell';
 import MemberDashboard from './MemberDashboard';
 
@@ -57,9 +57,13 @@ export default async function MemberPage() {
   const myRank = rankOf(member.id, leaderboard);
 
   // Delta activity dibanding minggu sebelumnya (dari 2 history terbaru).
+  const activityOnlyHistory = myHistory.filter(isActivityHistory);
+
   let prevDelta = null;
-  if (myHistory.length >= 2) {
-    prevDelta = (myHistory[0].activityPoint || 0) - (myHistory[1].activityPoint || 0);
+  if (activityOnlyHistory.length >= 2) {
+    prevDelta =
+      (activityOnlyHistory[0].activityPoint || 0) -
+      (activityOnlyHistory[1].activityPoint || 0);
   }
 
   // Kirim hanya field yang dibutuhkan preview leaderboard (ringkas & serializable).

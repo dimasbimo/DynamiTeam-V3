@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import {
   Plus, Trash2, Pencil, History as HistoryIcon, RotateCcw, Play, Users,
-  Search, Loader2,
+  Search, Loader2, PlusCircle, MinusCircle,
 } from 'lucide-react';
 import { roleLabel, MAIN_ROLES, SUB_ROLES } from '../../lib/roles';
 import {
@@ -23,17 +23,38 @@ const FILTERS = [
 // AdminDashboard. Komponen yang didefinisikan di dalam komponen lain dibuat
 // ulang setiap render, sehingga React membongkar-pasang elemennya terus -
 // input kehilangan fokus setiap satu ketikan.
-function ActionButtons({ m, large = false, onHistory, onEdit, onReset, onDelete }) {
+function ActionButtons({ m, large = false, onHistory, onEdit, onReset, onAddLife, onDecreaseLife, onDelete }) {
   const isKick = m.status === 'KICK';
   const btn = large ? 'p-2' : 'p-1.5';
   return (
     <div className="flex items-center gap-1">
       <button onClick={() => onHistory(m.id)} title="Riwayat" className={`${btn} rounded-md hover:bg-slate-800 text-slate-400 hover:text-slate-200`}><HistoryIcon className="w-4 h-4" /></button>
       <button onClick={() => onEdit(m)} title="Edit" className={`${btn} rounded-md hover:bg-slate-800 text-slate-400 hover:text-slate-200`}><Pencil className="w-4 h-4" /></button>
-      {(m.nyawaCurrent < MAX_NYAWA || isKick) && (
-        <button onClick={() => onReset(m.id)} title="Reset nyawa" className={`${btn} rounded-md hover:bg-slate-800 text-slate-400 hover:text-amber-400`}><RotateCcw className="w-4 h-4" /></button>
-      )}
-      <button onClick={() => onDelete(m.id)} title="Hapus" className={`${btn} rounded-md hover:bg-slate-800 text-slate-400 hover:text-rose-400`}><Trash2 className="w-4 h-4" /></button>
+    {m.nyawaCurrent < MAX_NYAWA && (
+  <button
+    onClick={() => onAddLife(m.id)}
+    title="Tambah nyawa / bonus"
+    className={`${btn} rounded-md hover:bg-slate-800 text-slate-400 hover:text-emerald-400`}
+  >
+    <PlusCircle className="w-4 h-4" />
+  </button>
+    )}
+
+    {m.nyawaCurrent > 0 && (
+      <button
+        onClick={() => onDecreaseLife(m.id)}
+        title="Kurangi nyawa / hukuman"
+        className={`${btn} rounded-md hover:bg-slate-800 text-slate-400 hover:text-orange-400`}
+      >
+        <MinusCircle className="w-4 h-4" />
+      </button>
+    )}
+
+    {(m.nyawaCurrent < MAX_NYAWA || isKick) && (
+      <button onClick={() => onReset(m.id)} title="Reset nyawa" className={`${btn} rounded-md hover:bg-slate-800 text-slate-400 hover:text-amber-400`}><RotateCcw className="w-4 h-4" /></button>
+    )}
+
+    <button onClick={() => onDelete(m.id)} title="Hapus" className={`${btn} rounded-md hover:bg-slate-800 text-slate-400 hover:text-rose-400`}><Trash2 className="w-4 h-4" /></button>
     </div>
   );
 }
@@ -135,6 +156,33 @@ export default function AdminDashboard({ initialMembers, initialWeekNumber }) {
     }
   }
 
+  async function confirmAdjustLife() {
+    setBusy(true);
+
+    try {
+      const delta = modal.type === 'addLifeConfirm' ? 1 : -1;
+
+      const { member } = await api(`/api/members/${modal.id}/life`, {
+        method: 'POST',
+        body: JSON.stringify({ delta }),
+      });
+
+      setMembers((prev) => prev.map((m) => (m.id === member.id ? member : m)));
+
+      showOk(
+        delta === 1
+          ? `Nyawa ${member.nama} ditambah 1.`
+          : `Nyawa ${member.nama} dikurangi 1.`
+      );
+
+      setModal(null);
+    } catch (e) {
+      showError(e.message);
+    } finally {
+      setBusy(false);
+    }
+  }
+
   async function confirmReset() {
     setBusy(true);
     try {
@@ -218,10 +266,12 @@ export default function AdminDashboard({ initialMembers, initialWeekNumber }) {
   }, [members, search, statusFilter]);
 
   const actionHandlers = {
-    onHistory: openHistory,
-    onEdit: openEdit,
-    onReset: (id) => setModal({ type: 'resetConfirm', id }),
-    onDelete: (id) => setModal({ type: 'deleteConfirm', id }),
+  onHistory: openHistory,
+  onEdit: openEdit,
+  onReset: (id) => setModal({ type: 'resetConfirm', id }),
+  onAddLife: (id) => setModal({ type: 'addLifeConfirm', id }),
+  onDecreaseLife: (id) => setModal({ type: 'decreaseLifeConfirm', id }),
+  onDelete: (id) => setModal({ type: 'deleteConfirm', id }),
   };
   const activityProps = { drafts, setDrafts, commitActivity };
 
@@ -437,6 +487,48 @@ export default function AdminDashboard({ initialMembers, initialWeekNumber }) {
             <button onClick={confirmDelete} disabled={busy} className="px-4 py-2 rounded-lg bg-rose-600 hover:bg-rose-500 text-white text-sm font-medium disabled:opacity-40 inline-flex items-center gap-1.5">
               {busy && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
               Hapus
+            </button>
+          </div>
+        </ModalShell>
+      )}
+
+
+      {modal && (modal.type === 'addLifeConfirm' || modal.type === 'decreaseLifeConfirm') && (
+        <ModalShell
+          onClose={() => setModal(null)}
+          title={modal.type === 'addLifeConfirm' ? 'Tambah Nyawa' : 'Kurangi Nyawa'}
+        >
+          <p className="text-sm text-slate-300">
+            Yakin ingin{' '}
+            {modal.type === 'addLifeConfirm' ? 'menambah' : 'mengurangi'} nyawa{' '}
+            <span className="font-semibold text-white">
+              {members.find((m) => m.id === modal.id)?.nama}
+            </span>{' '}
+            sebanyak 1?
+          </p>
+
+          <p className="text-xs text-slate-500 mt-2">
+            {modal.type === 'addLifeConfirm'
+              ? 'Tindakan ini cocok untuk bonus/reward member dan akan dicatat ke riwayat.'
+              : 'Tindakan ini cocok untuk hukuman/punishment member dan akan dicatat ke riwayat.'}
+          </p>
+
+          <div className="flex justify-end gap-2 mt-5">
+            <button onClick={() => setModal(null)} className="btn-secondary">
+              Batal
+            </button>
+
+            <button
+              onClick={confirmAdjustLife}
+              disabled={busy}
+              className={`px-4 py-2 rounded-lg text-white text-sm font-medium disabled:opacity-40 inline-flex items-center gap-1.5 ${
+                modal.type === 'addLifeConfirm'
+                  ? 'bg-emerald-600 hover:bg-emerald-500'
+                  : 'bg-orange-600 hover:bg-orange-500'
+              }`}
+            >
+              {busy && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+              {modal.type === 'addLifeConfirm' ? 'Tambah Nyawa' : 'Kurangi Nyawa'}
             </button>
           </div>
         </ModalShell>
