@@ -84,7 +84,7 @@ export default function ProfileView({ member, monthlyTotal, rank, monthLabel, ca
             <div className="dyn-card p-3.5">
               <div className="text-slate-400 text-xs mb-1">Rank</div>
               <div className="text-base font-display font-bold text-amber-300 leading-tight">{highrankInfo.rankName}</div>
-              <div className="text-[11px] text-slate-500 mt-0.5">{highrankInfo.point}★ bintang</div>
+              <div className="text-[11px] text-slate-500 mt-0.5">{highrankInfo.point} bintang</div>
             </div>
             <StatCard label="Peringkat Highrank" value={`#${highrankInfo.position}`} accent />
           </div>

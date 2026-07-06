@@ -22,7 +22,6 @@ export default function EditProfileForm({ member }) {
   const router = useRouter();
   const fileRef = useRef(null);
   const [nicknameML, setNickname] = useState(member.nicknameML || '');
-  const [roleSquad, setRole] = useState(member.roleSquad || '');
   const [idML, setIdML] = useState(member.idML || '');
   const [avatarUrl, setAvatarUrl] = useState(member.avatarUrl || null);
   const [preview, setPreview] = useState(null);
@@ -84,7 +83,6 @@ export default function EditProfileForm({ member }) {
   async function handleSave() {
     setError('');
     if (!nicknameML.trim()) return setError('Nickname wajib diisi.');
-    if (!roleSquad.trim()) return setError('Role squad wajib diisi.');
     if (!idML.trim()) return setError('ID ML wajib diisi.');
 
     setBusy(true);
@@ -92,7 +90,7 @@ export default function EditProfileForm({ member }) {
       const res = await fetch(`/api/members/${member.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nicknameML, roleSquad, idML }),
+        body: JSON.stringify({ nicknameML, idML }),
       });
       const body = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(body.error || 'Gagal menyimpan perubahan.');
@@ -148,16 +146,12 @@ export default function EditProfileForm({ member }) {
             <input value={nicknameML} maxLength={20} onChange={(e) => setNickname(e.target.value)} className="input" placeholder="Nickname ML" />
           </div>
 
-          <Field label="Role Squad">
-            <input value={roleSquad} onChange={(e) => setRole(e.target.value)} className="input" placeholder="Jungler, Roamer, Midlaner, ..." />
-          </Field>
-
           <div>
             <div className="flex items-center justify-between mb-1">
               <span className="text-xs text-slate-400">ID ML</span>
               <span className="text-[11px] text-slate-600">{idML.length}/20</span>
             </div>
-            <input value={idML} maxLength={20} onChange={(e) => setIdML(e.target.value)} className="input" placeholder="1234567 (8901)" />
+            <input value={idML} maxLength={20} onChange={(e) => setIdML(e.target.value)} className="input" placeholder="1234567" />
           </div>
 
           {error && <p className="text-sm text-rose-400">{error}</p>}
